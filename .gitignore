@@ -49,3 +49,8 @@ Thumbs.db
 
 # Keep important empty directories
 !.gitkeep
+
+# Additional files that I added
+.env
+scripts/utils/
+scripts/debug/
