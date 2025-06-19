@@ -1,0 +1,9 @@
+ticker,company_name,wall_street_consensus,strong_buy_count,buy_count,hold_count,sell_count,strong_sell_count,total_buy_ratings,total_sell_ratings,total_analysts,buy_percentage,current_price,previous_close,day_change,day_change_percent,average_price_target,high_price_target,low_price_target,upside_potential,period,timestamp
+BA,BA,BUY,11,16,9,1,0,27,1,37,73.0,200.26,201.7,-1.44,-0.71,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+F,F,SELL,2,1,21,4,5,3,9,33,9.1,10.42,10.62,-0.2,-1.88,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+GE,GE,BUY,9,15,5,0,0,24,0,29,82.8,235.75,236.54,-0.79,-0.33,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+JNJ,JNJ,HOLD,5,8,16,0,0,13,0,29,44.8,152.38,155.22,-2.84,-1.83,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+JPM,JPM,HOLD,4,13,13,0,0,17,0,30,56.7,269.52,270.36,-0.84,-0.31,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+MMM,MMM,BUY,5,10,6,2,0,15,2,23,65.2,142.21,145.07,-2.86,-1.97,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+T,T,BUY,10,16,10,1,0,26,1,37,70.3,27.65,27.97,-0.32,-1.14,0,0,0,0,2025-06-01,2025-06-17 18:07:54
+XOM,XOM,BUY,7,12,11,1,0,19,1,31,61.3,114.0,112.48,1.52,1.35,0,0,0,0,2025-06-01,2025-06-17 18:07:54

@@ -1,0 +1,9 @@
+ticker,company_name,wall_street_consensus,buy_ratings,hold_ratings,sell_ratings,total_analysts,buy_percentage,target_price,period
+NVDA,NVDA,BUY,63,6,1,70,90.0,N/A,2025-06-01
+MSFT,MSFT,BUY,61,8,0,69,88.4,N/A,2025-06-01
+META,META,BUY,69,7,2,78,88.5,N/A,2025-06-01
+AAPL,AAPL,BUY,40,13,4,57,70.2,N/A,2025-06-01
+GOOGL,GOOGL,BUY,51,13,0,64,79.7,N/A,2025-06-01
+NFLX,NFLX,BUY,42,15,0,57,73.7,N/A,2025-06-01
+AMZN,AMZN,BUY,74,5,0,79,93.7,N/A,2025-06-01
+TSLA,TSLA,HOLD,31,18,11,60,51.7,N/A,2025-06-01

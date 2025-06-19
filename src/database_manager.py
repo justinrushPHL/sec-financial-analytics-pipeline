@@ -273,3 +273,14 @@ class DatabaseManager:
                 "financial_statements": statement_count,
                 "date_range": date_range
             }
+    def clear_all_data(self):
+        """Clear all data from the database"""
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute("DELETE FROM financial_statements")
+            cursor.execute("DELETE FROM companies")
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error clearing database: {e}")
+            return False

@@ -1,6 +1,10 @@
 # config/config.py
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -14,10 +18,12 @@ DATABASE_PATH = DATA_DIR / "financial_data.db"
 
 # SEC API Configuration
 SEC_BASE_URL = "https://data.sec.gov"
+
+# SEC Headers - Use environment variable for email or generic placeholder
+USER_EMAIL = os.getenv('SEC_USER_EMAIL', 'your.email@example.com')
 SEC_HEADERS = {
-    "User-Agent": "Financial Analytics Pipeline justin.rush8612@gmail.com",  # CHANGE THIS!
-    "Accept-Encoding": "gzip, deflate",
-    "Host": "data.sec.gov"
+    "User-Agent": f"Financial Analytics Pipeline {USER_EMAIL}",
+    "Accept-Encoding": "gzip, deflate"
 }
 
 # Rate limiting (SEC allows 10 requests per second)

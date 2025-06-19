@@ -22,6 +22,9 @@ class SECDataCollector:
         self.session.headers.update(self.headers)
         self.logger = logging.getLogger(__name__)
         
+        # Cache for company lookups
+        self._company_tickers_cache = None
+        
         # Validate headers
         if "your.email@example.com" in self.headers["User-Agent"]:
             self.logger.warning("Please update your email in config/config.py SEC_HEADERS")
@@ -50,52 +53,91 @@ class SECDataCollector:
         return None
     
     def get_company_tickers(self) -> Dict[str, Dict]:
-        """Get company ticker mappings - using hardcoded list since SEC removed public endpoint"""
-        # Major company CIKs and tickers (hardcoded for reliability)
-        company_mappings = {
-            'AAPL': {'cik_str': 320193, 'ticker': 'AAPL', 'title': 'Apple Inc.'},
-            'MSFT': {'cik_str': 789019, 'ticker': 'MSFT', 'title': 'Microsoft Corp'},
-            'GOOGL': {'cik_str': 1652044, 'ticker': 'GOOGL', 'title': 'Alphabet Inc.'},
-            'AMZN': {'cik_str': 1018724, 'ticker': 'AMZN', 'title': 'Amazon.com Inc'},
-            'TSLA': {'cik_str': 1318605, 'ticker': 'TSLA', 'title': 'Tesla Inc'},
-            'NVDA': {'cik_str': 1045810, 'ticker': 'NVDA', 'title': 'NVIDIA Corp'},
-            'META': {'cik_str': 1326801, 'ticker': 'META', 'title': 'Meta Platforms Inc'},
-            'NFLX': {'cik_str': 1065280, 'ticker': 'NFLX', 'title': 'Netflix Inc'},
-            'JPM': {'cik_str': 19617, 'ticker': 'JPM', 'title': 'JPMorgan Chase & Co'},
-            'V': {'cik_str': 1403161, 'ticker': 'V', 'title': 'Visa Inc.'},
-            'JNJ': {'cik_str': 200406, 'ticker': 'JNJ', 'title': 'Johnson & Johnson'},
-            'WMT': {'cik_str': 104169, 'ticker': 'WMT', 'title': 'Walmart Inc'},
-            'PG': {'cik_str': 80424, 'ticker': 'PG', 'title': 'Procter & Gamble Co'},
-            'UNH': {'cik_str': 731766, 'ticker': 'UNH', 'title': 'UnitedHealth Group Inc'},
-            'HD': {'cik_str': 354950, 'ticker': 'HD', 'title': 'Home Depot Inc'}
-        }
+        """Get ALL company ticker mappings from SEC API (dynamic lookup)"""
+        if self._company_tickers_cache is not None:
+            return self._company_tickers_cache
         
-        # Convert to indexed format for compatibility
-        converted_data = {}
-        for i, (ticker, data) in enumerate(company_mappings.items()):
-            converted_data[str(i)] = data
+        self.logger.info("Fetching complete company ticker mappings from SEC...")
         
-        self.logger.info(f"Using hardcoded company mappings for {len(converted_data)} companies")
-        return converted_data
+        # Correct SEC company tickers endpoint (found in documentation)
+        url = "https://www.sec.gov/files/company_tickers.json"
+        
+        try:
+            # Make direct request (not using _make_request to avoid rate limiting delay)
+            response = requests.get(url, headers=self.headers, timeout=30)
+            response.raise_for_status()
+            
+            company_data = response.json()
+            self.logger.info(f"Successfully loaded {len(company_data)} companies from SEC")
+            
+            # Cache the result
+            self._company_tickers_cache = company_data
+            return company_data
+            
+        except Exception as e:
+            self.logger.error(f"Failed to fetch company tickers from SEC: {e}")
+            self.logger.info("Falling back to hardcoded list of major companies...")
+            
+            # Fallback to hardcoded list if SEC API fails
+            fallback_companies = {
+                '0': {'cik_str': 320193, 'ticker': 'AAPL', 'title': 'Apple Inc.'},
+                '1': {'cik_str': 789019, 'ticker': 'MSFT', 'title': 'Microsoft Corp'},
+                '2': {'cik_str': 1652044, 'ticker': 'GOOGL', 'title': 'Alphabet Inc.'},
+                '3': {'cik_str': 1018724, 'ticker': 'AMZN', 'title': 'Amazon.com Inc'},
+                '4': {'cik_str': 1318605, 'ticker': 'TSLA', 'title': 'Tesla Inc'},
+                '5': {'cik_str': 1045810, 'ticker': 'NVDA', 'title': 'NVIDIA Corp'},
+                '6': {'cik_str': 1326801, 'ticker': 'META', 'title': 'Meta Platforms Inc'},
+                '7': {'cik_str': 1065280, 'ticker': 'NFLX', 'title': 'Netflix Inc'},
+                '8': {'cik_str': 19617, 'ticker': 'JPM', 'title': 'JPMorgan Chase & Co'},
+                '9': {'cik_str': 1403161, 'ticker': 'V', 'title': 'Visa Inc.'},
+                '10': {'cik_str': 200406, 'ticker': 'JNJ', 'title': 'Johnson & Johnson'},
+                '11': {'cik_str': 104169, 'ticker': 'WMT', 'title': 'Walmart Inc'},
+                '12': {'cik_str': 80424, 'ticker': 'PG', 'title': 'Procter & Gamble Co'},
+                '13': {'cik_str': 731766, 'ticker': 'UNH', 'title': 'UnitedHealth Group Inc'},
+                '14': {'cik_str': 354950, 'ticker': 'HD', 'title': 'Home Depot Inc'},
+                # Add WK and CMG to fallback list
+                '15': {'cik_str': 1564590, 'ticker': 'WK', 'title': 'Workiva Inc'},
+                '16': {'cik_str': 1058090, 'ticker': 'CMG', 'title': 'Chipotle Mexican Grill Inc'}
+            }
+            
+            self._company_tickers_cache = fallback_companies
+            return fallback_companies
     
     def find_companies_by_tickers(self, target_tickers: List[str]) -> List[Dict]:
-        """Find company information for specific tickers"""
+        """Find company information for specific tickers using dynamic lookup"""
         all_companies = self.get_company_tickers()
         target_companies = []
         
         # Convert tickers to uppercase for comparison
-        target_tickers_upper = [ticker.upper() for ticker in target_tickers]
+        target_tickers_upper = [ticker.upper().strip() for ticker in target_tickers]
         
+        self.logger.info(f"Searching for companies with tickers: {target_tickers_upper}")
+        
+        # Search through all companies
+        found_tickers = set()
         for key, company in all_companies.items():
-            if company['ticker'].upper() in target_tickers_upper:
+            company_ticker = company.get('ticker', '').upper().strip()
+            
+            if company_ticker in target_tickers_upper:
                 target_companies.append({
                     'cik': str(company['cik_str']).zfill(10),  # Pad with zeros
-                    'ticker': company['ticker'].upper(),
-                    'company_name': company['title'],
+                    'ticker': company_ticker,
+                    'company_name': company.get('title', f'Company {company_ticker}'),
                     'raw_cik': company['cik_str']
                 })
+                found_tickers.add(company_ticker)
+                self.logger.info(f"✅ Found: {company_ticker} - {company.get('title')}")
         
-        self.logger.info(f"Found {len(target_companies)} companies for target tickers")
+        # Report missing tickers
+        missing_tickers = set(target_tickers_upper) - found_tickers
+        if missing_tickers:
+            self.logger.warning(f"[FAILED] Could not find companies for: {list(missing_tickers)}")
+            self.logger.info("These tickers may:")
+            self.logger.info("  - Not exist or be delisted")
+            self.logger.info("  - Be foreign companies not required to file with SEC")
+            self.logger.info("  - Be ETFs, funds, or other non-corporate entities")
+        
+        self.logger.info(f"Successfully found {len(target_companies)} out of {len(target_tickers)} requested companies")
         return target_companies
     
     def get_company_submissions(self, cik: str) -> Optional[Dict]:
@@ -246,7 +288,7 @@ class SECDataCollector:
         """Main method to collect all data for specified tickers"""
         self.logger.info(f"Starting data collection for tickers: {tickers}")
         
-        # Find companies
+        # Find companies using dynamic lookup
         companies = self.find_companies_by_tickers(tickers)
         if not companies:
             self.logger.error("No companies found for specified tickers")
