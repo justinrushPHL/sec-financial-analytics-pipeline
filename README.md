@@ -1,6 +1,6 @@
-# SEC Financial Analytics Intelligence Platform
+# SEC Financial Analytics Platform
 
-**Enterprise-Grade Financial Data Pipeline with Advanced SQL Analytics & Executive Business Intelligence**
+**Enterprise-Grade Financial Data Platform with Advanced SQL Analytics & Executive Business Intelligence**
 
 A comprehensive financial intelligence platform that delivers real-time SEC EDGAR data analysis, proprietary investment algorithms, and executive-level Power BI dashboards for any combination of publicly traded companies (up to 8 stocks) through advanced Python programming, sophisticated SQL analytics, and professional business intelligence development.
 
@@ -96,8 +96,8 @@ Collection     Python Pipeline    Calculation          Schema Design     Algorit
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/justinrushPHL/sec-financial-analytics-pipeline.git
-cd sec-financial-analytics-pipeline
+git clone https://github.com/justinrushPHL/sec-financial-analytics-platform.git
+cd sec-financial-analytics-platform
 ```
 
 2. **Create virtual environment**
@@ -193,7 +193,7 @@ Coca-Cola: HOLD       65% BUY/HOLD
 ## 📁 Project Structure
 
 ```
-sec-financial-analytics-pipeline/
+sec-financial-analytics-platform/
 ├── 📁 config/
 │   └── config.py                    # Environment & API configuration
 ├── 📁 src/  
@@ -348,7 +348,7 @@ IF([price_to_book] <= 1.5 && [dividend_yield] >= 3, "Value Sweet Spot",
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/justinrush/)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/justinrushPHL)
 
-**Project Repository**: [github.com/justinrushPHL/sec-financial-analytics-pipeline](https://github.com/justinrushPHL/sec-financial-analytics-pipeline)
+**Project Repository**: [github.com/justinrushPHL/sec-financial-analytics-platform](https://github.com/justinrushPHL/sec-financial-analytics-platform)
 
 ---
 
